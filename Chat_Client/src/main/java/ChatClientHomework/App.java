@@ -27,6 +27,7 @@ public class App extends Application {
         primaryStage.setAlwaysOnTop(false);
         primaryStage.setTitle("Сетевой Чат");
         primaryStage.show();
+
     }
 }
 

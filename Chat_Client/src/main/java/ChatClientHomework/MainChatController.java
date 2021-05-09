@@ -2,6 +2,8 @@ package ChatClientHomework;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 import java.awt.*;
@@ -34,6 +37,8 @@ public class MainChatController {
 
     public void exit(ActionEvent actionEvent) {
         Platform.exit();
+
+
     }
 
     public void showAbout(ActionEvent actionEvent) throws IOException {
@@ -41,12 +46,20 @@ public class MainChatController {
         loader.setLocation(getClass().getResource("/about.fxml"));
         Stage stage = new Stage();
         Parent root1 = loader.load();
-        Scene scene1  = new Scene(root1);
+        Scene scene1 = new Scene(root1);
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene1);
         stage.show();
 
-    }
 
+        stage.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.close();
+            }
+        });
+
+    }
 
 
     public void showHelp(ActionEvent actionEvent) throws URISyntaxException, IOException {
