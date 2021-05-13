@@ -30,6 +30,18 @@
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-fxml</artifactId>
         <version>15.0.1</version>
+
     </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>Chat_Client_Network</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>Chat_Common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 </project>
