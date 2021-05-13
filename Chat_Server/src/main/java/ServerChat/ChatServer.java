@@ -18,7 +18,6 @@ public class ChatServer {
     private List<ClientHandler> listOnlineUsers;
     private AuthService authService;
 
-
     public ChatServer() {
         this.listOnlineUsers = new ArrayList<>();
         this.authService = new PrimitiveInMemoryAuthService();
@@ -26,13 +25,13 @@ public class ChatServer {
 
     public void start() {
         try(ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server started");
+            System.out.println("Сервер запущен");
             authService.start();
 
             while (true) {
-                System.out.println("Waiting for connection");
+                System.out.println("Ждём подключений");
                 Socket socket = serverSocket.accept();
-                System.out.println("Client connected");
+                System.out.println("Клиент подключился");
                 new ClientHandler(socket, this).handle();
             }
         } catch (IOException e) {
