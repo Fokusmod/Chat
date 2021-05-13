@@ -32,7 +32,7 @@ public class ClientHandler {
             try {
                 while (!Thread.currentThread().isInterrupted() || socket.isConnected()) {
                     String msg = inputStream.readUTF();
-                    System.out.printf("Client#%d: %s\n", this.clientNumber, msg);
+                    System.out.printf("Client#%d: %s\n", this.clientNumber,msg);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
