@@ -1,12 +1,14 @@
 package ChatClientHomework;
 
+import ChatClientHomework.network.ChatMessageService;
+import ChatClientHomework.network.ChatMessageServiceImpl;
+import ChatClientHomework.network.MessageProcessor;
 import common.ChatMessage;
 import common.MessageType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -20,23 +22,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import network.ChatMessageService;
-import network.ChatMessageServiceImpl;
-import network.MessageProcessor;
 
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.MonthDay;
 import java.util.ResourceBundle;
 
 public class MainChatController implements Initializable, MessageProcessor {
 
 
+    private static final String PUBLIC = "PUBLIC";
     public TextArea chatArea;
     public ListView onlineUsers;
     public TextField inputField;
@@ -48,7 +46,11 @@ public class MainChatController implements Initializable, MessageProcessor {
     private String currentName;
 
     public void mockAction(ActionEvent actionEvent) {
-        System.out.println("MOCK!");
+        try {
+            throw new RuntimeException("AAAAAAAAAAAAA");
+        } catch (RuntimeException e) {
+            showError(e);
+        }
     }
 
     public void exit(ActionEvent actionEvent) {
@@ -87,15 +89,23 @@ public class MainChatController implements Initializable, MessageProcessor {
         String text = inputField.getText();
         if (text.isEmpty()) return;
         ChatMessage msg = new ChatMessage();
-        msg.setMessageType(MessageType.PUBLIC);
+        String addressee = (String) this.onlineUsers.getSelectionModel().getSelectedItem();
+        if (addressee.equals(PUBLIC)) msg.setMessageType(MessageType.PUBLIC);
+        else {
+            msg.setMessageType(MessageType.PRIVATE);
+            msg.setTo(addressee);
+        }
         msg.setFrom(currentName);
         msg.setBody(text);
         messageService.send(msg.marshall());
+        chatArea.appendText(String.format("[ME] %s\n", text));
         inputField.clear();
     }
 
-    private void appendTextFromTF(ChatMessage msg) {
-        String text = String.format("[%s] %s\n", msg.getFrom(), msg.getBody());
+    private void appendTextToChatArea(ChatMessage msg) {
+        if (msg.getFrom().equals(this.currentName)) return;
+        String modifier = msg.getMessageType().equals(MessageType.PUBLIC) ? "[pub]" : "[private]";
+        String text = String.format("%s [%s] %s\n", modifier, msg.getFrom(), msg.getBody());
         chatArea.appendText(text);
     }
 
@@ -117,11 +127,33 @@ public class MainChatController implements Initializable, MessageProcessor {
         alert.showAndWait();
     }
 
+    private void showError(ChatMessage msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Something went wrong!");
+        alert.setHeaderText(msg.getMessageType().toString());
+        VBox dialog = new VBox();
+        Label label = new Label("Error:");
+        TextArea textArea = new TextArea();
+        textArea.setText(msg.getBody());
+        dialog.getChildren().addAll(label, textArea);
+        alert.getDialogPane().setContent(dialog);
+        alert.showAndWait();
+    }
+
     public void handleButtonAction(ActionEvent actionEvent) {
     }
 
 
     public void sendAuth(ActionEvent actionEvent) {
+
+        try {
+
+            if (!messageService.isConnected())
+            messageService.connect();
+        } catch (Exception e) {
+            showError(e);
+        }
+
         String log = loginField.getText();
         String pass = passwordField.getText();
         if (log.isEmpty() || pass.isEmpty()) return;
@@ -135,7 +167,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.messageService = new ChatMessageServiceImpl("localhost", 1300, this);
-        messageService.connect();
+
     }
 
     @Override
@@ -145,18 +177,21 @@ public class MainChatController implements Initializable, MessageProcessor {
                     System.out.println("Received message");
 
                     switch (message.getMessageType()) {
-                        case PUBLIC -> appendTextFromTF(message);
+                        case PUBLIC, PRIVATE -> appendTextToChatArea(message);
                         case CLIENT_LIST -> refreshOnlineUsers(message);
                         case AUTH_CONFIRM -> {
                             this.currentName = message.getBody();
                             App.stage1.setTitle(currentName);
                         }
+                        case ERROR -> showError(message);
                     }
                 }
         );
     }
 
     private void refreshOnlineUsers(ChatMessage message) {
+        message.getOnlineUsers().add(0, PUBLIC);
         this.onlineUsers.setItems(FXCollections.observableArrayList(message.getOnlineUsers()));
+        this.onlineUsers.getSelectionModel().selectAll();
     }
 }

@@ -1,5 +1,6 @@
 package ServerChat;
 
+import ServerChat.Auch.AuthService;
 import common.ChatMessage;
 import common.MessageType;
 
@@ -7,6 +8,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ClientHandler {
     private Socket socket;
@@ -36,22 +40,22 @@ public class ClientHandler {
                 e.printStackTrace();
             }
         }).start();
+
     }
 
     private void readMessages() throws IOException {
         try {
-            while (!Thread.currentThread().isInterrupted() || socket.isConnected()) {
+            while (!Thread.currentThread().isInterrupted() || !socket.isClosed()) {
                 String msg = inputStream.readUTF();
                 ChatMessage message = ChatMessage.unmarshall(msg);
                 message.setFrom(this.currentUsername);
                 switch (message.getMessageType()) {
                     case PUBLIC -> chatServer.sendBroadcastMessage(message);
+                    case PRIVATE -> chatServer.sendPrivateMessage(message);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            closeHandler();
         }
     }
 
@@ -69,7 +73,6 @@ public class ClientHandler {
 
     private void authenticate() {
         System.out.println("Запущена аутентификация клиента...");
-
         try {
             while (true) {
                 String authMessage = inputStream.readUTF();
@@ -78,10 +81,22 @@ public class ClientHandler {
                 String username = chatServer.getAuthService().getUsernameByLoginAndPassword(msg.getLogin(), msg.getPassword());
                 ChatMessage response = new ChatMessage();
 
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, 4000);
+
                 if (username == null) {
                     response.setMessageType(MessageType.ERROR);
                     response.setBody("Неправильное имя или пароль!");
-                    System.out.println("Wrong credentials");
+                    System.out.println("Неверные учетные данные");
                 } else if (chatServer.isUserOnline(username)) {
                     response.setMessageType(MessageType.ERROR);
                     response.setBody("Double auth!");
@@ -93,9 +108,13 @@ public class ClientHandler {
                     chatServer.subscribe(this);
                     System.out.println("Subscribed");
                     sendMessage(response);
+                    timer.cancel();
                     break;
                 }
                 sendMessage(response);
+                System.out.println(socket.isClosed());
+
+
             }
         } catch (IOException e) {
             e.printStackTrace();
