@@ -1,8 +1,8 @@
-package network;
+package ChatClientHomework.network;
 
 import java.io.IOException;
 
-public class ChatMessageServiceImpl implements ChatMessageService{
+public class ChatMessageServiceImpl implements ChatMessageService {
     private String host;
     private int port;
     private NetworkService networkService;
@@ -22,6 +22,11 @@ public class ChatMessageServiceImpl implements ChatMessageService{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean isConnected() {
+        return this .networkService != null && this.networkService.getSocket().isConnected();
     }
 
     @Override

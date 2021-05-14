@@ -1,4 +1,4 @@
-package network;
+package ChatClientHomework.network;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -20,17 +20,20 @@ public class NetworkService {
 
     public void readMessages() {
         Thread t = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()){
+
+            while (!Thread.currentThread().isInterrupted() || socket.isConnected()) {
                 try {
                     String in = inputStream.readUTF();
                     messageService.receive(in);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                   e.printStackTrace();
                 }
             }
         });
+
         t.setDaemon(true);
         t.start();
+
     }
 
     public void sendMessage(String msg) {
@@ -39,5 +42,9 @@ public class NetworkService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

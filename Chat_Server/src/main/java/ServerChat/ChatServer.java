@@ -16,6 +16,7 @@ import java.util.List;
 public class ChatServer {
     private static final int PORT = 1300;
     private List<ClientHandler> listOnlineUsers;
+
     private AuthService authService;
 
     public ChatServer() {
@@ -55,6 +56,13 @@ public class ChatServer {
 
     public synchronized void sendBroadcastMessage(ChatMessage message) {
         for (ClientHandler user : listOnlineUsers) {
+            user.sendMessage(message);
+        }
+    }
+
+    public void sendPrivateMessage(ChatMessage message) {
+        for (ClientHandler user : listOnlineUsers) {
+            if (user.getCurrentName().equals(message.getTo()))
             user.sendMessage(message);
         }
     }
