@@ -21,12 +21,20 @@ public class NetworkService {
     public void readMessages() {
         Thread t = new Thread(() -> {
 
-            while (!Thread.currentThread().isInterrupted() || socket.isConnected()) {
+            while (!Thread.currentThread().isInterrupted() && !socket.isClosed()) {
                 try {
                     String in = inputStream.readUTF();
                     messageService.receive(in);
+
                 } catch (IOException e) {
-                   e.printStackTrace();
+                    try {
+                        socket.close();
+                        inputStream.close();//TODO
+                        System.out.println("Socket is closed");
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+
+                    }
                 }
             }
         });

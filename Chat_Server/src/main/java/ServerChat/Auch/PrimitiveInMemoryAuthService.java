@@ -22,6 +22,7 @@ public class PrimitiveInMemoryAuthService implements AuthService {
     @Override
     public void stop() {
         System.out.println("Auth service stopped");
+
     }
 
     @Override
