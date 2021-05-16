@@ -85,7 +85,7 @@ public class MainChatController implements Initializable, MessageProcessor {
         desktop.browse(new URI("https://docs.google.com/document/d/1wr0YEtIc5yZtKFu-KITqYnBtp8KC28v2FEYUANL0YAM/edit?usp=sharing"));
     }
 
-    public void sendMessage(ActionEvent actionEvent) {
+    public void sendMessage(ActionEvent actionEvent) {  //TODO
         String text = inputField.getText();
         if (text.isEmpty()) return;
         ChatMessage msg = new ChatMessage();
