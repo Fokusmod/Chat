@@ -12,7 +12,6 @@
         <module>Chat_Client</module>
         <module>Chat_Server</module>
         <module>Chat_Common</module>
-        <module>Chat_Client_Network</module>
     </modules>
 
     <properties>
