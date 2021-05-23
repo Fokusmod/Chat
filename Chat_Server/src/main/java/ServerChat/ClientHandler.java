@@ -31,7 +31,7 @@ public class ClientHandler {
         }
     }
 
-    public void handle() {
+    public synchronized void handle() {
         new Thread(() -> {
             try {
                 authenticate();
@@ -40,7 +40,6 @@ public class ClientHandler {
                 e.printStackTrace();
             }
         }).start();
-
     }
 
     private void readMessages() throws IOException {
@@ -55,7 +54,7 @@ public class ClientHandler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            socket.close();
         }
     }
 
@@ -72,6 +71,23 @@ public class ClientHandler {
     }
 
     private void authenticate() {
+        Timer timer = new Timer(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    ChatMessage response = new ChatMessage();
+                    response.setMessageType(MessageType.ERROR);
+                    response.setBody("Время для подключения вышло! Вы были отключены.");
+                    sendMessage(response);
+                    Thread.sleep(50);
+                    socket.close();
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 20000);
+
         System.out.println("Запущена аутентификация клиента...");
         try {
             while (true) {
@@ -80,18 +96,6 @@ public class ClientHandler {
                 ChatMessage msg = ChatMessage.unmarshall(authMessage);
                 String username = chatServer.getAuthService().getUsernameByLoginAndPassword(msg.getLogin(), msg.getPassword());
                 ChatMessage response = new ChatMessage();
-
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, 4000);
 
                 if (username == null) {
                     response.setMessageType(MessageType.ERROR);
@@ -112,12 +116,13 @@ public class ClientHandler {
                     break;
                 }
                 sendMessage(response);
-                System.out.println(socket.isClosed());
-
-
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {  //TODO
+            try {
+                socket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 

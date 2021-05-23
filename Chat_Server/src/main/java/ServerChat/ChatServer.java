@@ -3,7 +3,7 @@ package ServerChat;
 
 
 import ServerChat.Auch.AuthService;
-import ServerChat.Auch.PrimitiveInMemoryAuthService;
+import ServerChat.Auch.SimpleAuthService;
 import common.ChatMessage;
 import common.MessageType;
 
@@ -21,7 +21,7 @@ public class ChatServer {
 
     public ChatServer() {
         this.listOnlineUsers = new ArrayList<>();
-        this.authService = new PrimitiveInMemoryAuthService();
+        this.authService = new SimpleAuthService();
     }
 
     public void start() {

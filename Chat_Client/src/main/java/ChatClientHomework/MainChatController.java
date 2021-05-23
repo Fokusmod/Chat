@@ -3,6 +3,7 @@ package ChatClientHomework;
 import ChatClientHomework.network.ChatMessageService;
 import ChatClientHomework.network.ChatMessageServiceImpl;
 import ChatClientHomework.network.MessageProcessor;
+import ServerChat.Auch.AuthService;
 import common.ChatMessage;
 import common.MessageType;
 import javafx.application.Platform;
@@ -19,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -42,8 +44,13 @@ public class MainChatController implements Initializable, MessageProcessor {
     public TextField loginField;
     public PasswordField passwordField;
     public Button btnSendAuth;
+    public Button checkIn;
+    public Button ChangeNickName;
+    public Button ChangePassword;
     private ChatMessageService messageService;
     private String currentName;
+
+
 
     public void mockAction(ActionEvent actionEvent) {
         try {
@@ -149,7 +156,7 @@ public class MainChatController implements Initializable, MessageProcessor {
         try {
 
             if (!messageService.isConnected())
-            messageService.connect();
+                messageService.connect();
         } catch (Exception e) {
             showError(e);
         }
@@ -162,6 +169,8 @@ public class MainChatController implements Initializable, MessageProcessor {
         msg.setLogin(log);
         msg.setPassword(pass);
         messageService.send(msg.marshall());
+        loginField.clear();
+        passwordField.clear();
     }
 
     @Override
@@ -193,5 +202,17 @@ public class MainChatController implements Initializable, MessageProcessor {
         message.getOnlineUsers().add(0, PUBLIC);
         this.onlineUsers.setItems(FXCollections.observableArrayList(message.getOnlineUsers()));
         this.onlineUsers.getSelectionModel().selectAll();
+
+    }
+
+    public void checkIn(ActionEvent actionEvent) {
+    }
+
+    public void changeNickName(ActionEvent actionEvent) {
+
+    }
+
+    public void changePassword(ActionEvent actionEvent) {
+
     }
 }

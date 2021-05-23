@@ -43,6 +43,11 @@
             <PasswordField fx:id="passwordField"/>
             <Button fx:id="btnSendAuth" text="log in" onAction="#sendAuth"/>
         </HBox>
+        <HBox>
+            <Button fx:id="checkIn" text="Check In" onAction="#checkIn"/>
+            <Button fx:id="ChangeNickName" text="Change Nick" onAction="#changeNickName"/>
+            <Button fx:id="ChangePassword" text="Change Password" onAction="#changePassword"/>
+        </HBox>
         <HBox VBox.vgrow="ALWAYS">
             <TextArea fx:id="chatArea" editable="false" prefHeight="490.0" prefWidth="635.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
             <font>
