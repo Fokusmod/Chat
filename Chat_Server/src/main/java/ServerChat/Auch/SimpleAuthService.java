@@ -4,6 +4,12 @@ import java.sql.*;
 import java.util.List;
 
 public class SimpleAuthService implements AuthService {
+    private final static String CONNECTION = "jdbc:sqlite:chat_server/Auth.db";
+    private final static String GET_USERNAME = "select nickname from Account where login = ? and password = ?;";
+    private final static String CHANGE_USERNAME = "update Account set nickname = ? where nickname = ?;";
+    private final static String CHANGE_PASSWORD = "update Account set password = ? where login = ? and password = ?;";
+    private final static String ADD_CLIENT = "insert into Account  (login, password, nickname) values ('fokus', 'pass', 'user1'), ('mod', 'pass','user2')";
+
     private static Connection connection;
     private static Statement statement;
 
@@ -12,10 +18,10 @@ public class SimpleAuthService implements AuthService {
     public void start() {
         System.out.println("Сервис аутентификации запущен");
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:Auth.db");
+            connection = DriverManager.getConnection(CONNECTION);
             statement = connection.createStatement();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -36,54 +42,71 @@ public class SimpleAuthService implements AuthService {
 
     @Override
     public String getUsernameByLoginAndPassword(String login, String password) {
-        try {
-            ResultSet rs = statement.executeQuery("Select * From Account;");
-            while (rs.next()) {
-                if (login.equals(rs.getString("login")) && password.equals(rs.getString("password")))
-                    return rs.getString("nickname");
+        try (PreparedStatement ps = connection.prepareStatement(GET_USERNAME)) {
+            ps.setString(1, login);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String result = rs.getString("nickname");
+                rs.close();
+                return result;
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public void changeUsername(String oldName, String newName) {
-        try {
-            statement.executeUpdate("update Account set nickname = " + newName + "where nickname = " + oldName + ";");
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+    public String changeUsername(String newName,String oldName) {
+        try (PreparedStatement ps = connection.prepareStatement(CHANGE_USERNAME)) {
+            ps.setString(1, newName);
+            ps.setString(2, oldName);
+            if (ps.executeUpdate() > 0) {
+                ps.close();
+                return newName;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return oldName;
     }
 
     @Override
-    public void changePassword(String username, String oldPassword, String newPassword) {
+    public String changePassword(String newPassword,String currentLogin, String oldPassword) { //TODO
+        try (PreparedStatement ps = connection.prepareStatement(CHANGE_PASSWORD)) {
+            ps.setString(1, newPassword);
+            ps.setString(2,currentLogin);
+            ps.setString(3,oldPassword);
+            if (ps.executeUpdate()> 0) {
+                ps.close();
+                return newPassword;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }return oldPassword;
+    }
+
+    @Override
+    public boolean newUser(String login, String password, String username) { //TODO
         try {
-            ResultSet rs = statement.executeQuery("Select login, password from Account;");
+            if (login.equalsIgnoreCase(username)) return false;
+            ResultSet rs = statement.executeQuery("Select login, nickname from Account;");
             while (rs.next()) {
-                if (username.equals(rs.getString("login"))&& oldPassword.equals(rs.getString("password"))) {
-                    statement.executeUpdate("Update Account set password = " + newPassword + ";");
-                    break;
-                }
+                if (login.equals(rs.getString("login"))) return false;
+//                if (username.equalsIgnoreCase(login)) return false;
+
+                statement.executeUpdate("insert into Account (login, password, nickname) values ('" + login + "', '" + password + "', '" + username + "')");
+                rs.close();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        return true;
     }
 
-    @Override
-    public void newUser(String username, String login, String password) {
-        try {
-            ResultSet rs = statement.executeQuery("Select login from Account;");
-            while (rs.next()) {
-                if (login.equals(rs.getString(2))) return;
-                statement.executeUpdate("insert into students (login, password, nickname) values (" + login + "," + password + ", " + username + ")");
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    public boolean isStart() throws SQLException {
+        return !statement.isClosed();
     }
 
 }
