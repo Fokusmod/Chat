@@ -1,83 +1,187 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ChatClientHomework.MainChatController">
-    <children>
-        <MenuBar VBox.vgrow="NEVER">
-            <Menu text="File">
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#exit" text="Exit" />
-            </Menu>
-            <Menu text="Settings">
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#exit" text="Exit" />
-            </Menu>
-            <Menu text="File">
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#exit" text="Exit" />
-            </Menu>
-            <Menu text="Help">
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#mockAction" text="Item 1" />
-                <MenuItem onAction="#showHelp" text="Help" />
-                <MenuItem onAction="#showAbout" text="About" />
-            </Menu>
-        </MenuBar>
-        <HBox>
-            <TextField fx:id="loginField"/>
-            <PasswordField fx:id="passwordField"/>
-            <Button fx:id="btnSendAuth" text="log in" onAction="#sendAuth"/>
-        </HBox>
-        <HBox>
-            <Button fx:id="checkIn" text="Check In" onAction="#checkIn"/>
-            <Button fx:id="ChangeNickName" text="Change Nick" onAction="#changeNickName"/>
-            <Button fx:id="ChangePassword" text="Change Password" onAction="#changePassword"/>
-        </HBox>
-        <HBox VBox.vgrow="ALWAYS">
-            <TextArea fx:id="chatArea" editable="false" prefHeight="490.0" prefWidth="635.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ChatClientHomework.MainChatController">
+    <AnchorPane fx:id="Settings" layoutY="-2.0" prefHeight="400.0" prefWidth="600.0" visible="false" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
+        <children>
+            <Label layoutX="149.0" layoutY="303.0" prefHeight="43.0" prefWidth="172.0" text="Сменить Никнейм">
+                <font>
+                    <Font name="Times New Roman Bold" size="20.0" />
+                </font>
+            </Label>
+            <Button fx:id="sendChangeNick" layoutX="186.0" layoutY="488.0" mnemonicParsing="false" onAction="#sendChangeNickname" text="Отправить" />
+            <TextField fx:id="newNick" layoutX="149.0" layoutY="429.0" promptText="Введите новый" />
+            <Label layoutX="27.0" layoutY="379.0" text="Старый никнейм">
+                <font>
+                    <Font name="Times New Roman" size="15.0" />
+                </font>
+            </Label>
+            <Label layoutX="33.0" layoutY="432.0" text="Новый никнейм">
+                <font>
+                    <Font name="Times New Roman" size="15.0" />
+                </font>
+            </Label>
+            <Label layoutX="617.0" layoutY="313.0" text="Сменить пароль">
+                <font>
+                    <Font name="Times New Roman Bold" size="20.0" />
+                </font>
+            </Label>
+            <TextField fx:id="oldNick" layoutX="149.0" layoutY="376.0" promptText="Введите старый" />
+            <PasswordField fx:id="newPass" layoutX="618.0" layoutY="446.0" promptText="Введите новый" />
+            <TextField fx:id="oldPass" layoutX="618.0" layoutY="407.0" promptText="Введите старый" />
+            <Button fx:id="sendChangePass" layoutX="655.0" layoutY="488.0" mnemonicParsing="false" onAction="#sendChangePass" text="Отправить" />
+            <Button fx:id="cancelSetting" layoutX="433.0" layoutY="616.0" mnemonicParsing="false" onAction="#cancelSetting" text="Вернуться" />
+            <Label layoutX="783.0" layoutY="411.0" text="Старый пароль" AnchorPane.bottomAnchor="286.0" AnchorPane.leftAnchor="783.0" AnchorPane.topAnchor="411.0">
+                <font>
+                    <Font name="Times New Roman" size="15.0" />
+                </font>
+            </Label>
+            <Label layoutX="786.0" layoutY="450.0" text="Новый пароль" AnchorPane.leftAnchor="783.0">
+                <font>
+                    <Font name="Times New Roman" size="15.0" />
+                </font>
+            </Label>
+            <Label layoutX="340.0" layoutY="74.0" text="Настройки аккаунта">
+                <font>
+                    <Font name="Times New Roman" size="30.0" />
+                </font>
+            </Label>
+            <Label fx:id="labelSettingInfo" alignment="CENTER" layoutX="202.0" layoutY="133.0" prefHeight="123.0" prefWidth="534.0" text="Здесь можно изменить ваш никнейм или пароль" textAlignment="CENTER">
+                <font>
+                    <Font name="Times New Roman" size="20.0" />
+                </font></Label>
+         <TextField fx:id="settingLogin" layoutX="618.0" layoutY="367.0" promptText="Введите логин" />
+         <Label layoutX="783.0" layoutY="371.0" text="Логин" AnchorPane.leftAnchor="783.0" AnchorPane.topAnchor="371.0">
             <font>
-                <Font size="16.0" />
+               <Font name="Times New Roman" size="15.0" />
             </font>
-            </TextArea>
-            <ListView fx:id="onlineUsers" prefWidth="150.0">
-                <HBox.margin>
-                    <Insets left="5.0" />
-                </HBox.margin>
-            </ListView>
+         </Label>
+         <Separator layoutX="469.0" layoutY="316.0" orientation="VERTICAL" prefHeight="251.0" prefWidth="6.0" />
+         <Separator layoutX="27.0" layoutY="295.0" prefHeight="2.0" prefWidth="893.0" />
+        </children>
+        </AnchorPane>
+    <AnchorPane fx:id="ChatPane" minHeight="-Infinity" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <MenuBar prefHeight="25.0" prefWidth="950.0" VBox.vgrow="ALWAYS">
+                <Menu text="Файл">
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#exit" text="Exit" />
+                </Menu>
+                <Menu text="Настройки">
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#exit" text="Exit" />
+                </Menu>
+                <Menu text="Помощь">
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#mockAction" text="Item 1" />
+                    <MenuItem onAction="#showHelp" text="Help" />
+                    <MenuItem onAction="#showAbout" text="About" />
+                </Menu>
+            </MenuBar>
 
-            <padding>
-                <Insets topRightBottomLeft="5.0" />
-            </padding>
-        </HBox>
-        <HBox>
-            <TextField fx:id="inputField" onAction="#sendMessage" prefHeight="70.0" HBox.hgrow="ALWAYS">
+
+            <Label prefHeight="100.0" prefWidth="310.0" AnchorPane.topAnchor="25.0">
+
+
+            </Label>
+            <Separator orientation="VERTICAL" prefHeight="100.0" prefWidth="0.0" AnchorPane.leftAnchor="308.0" AnchorPane.topAnchor="25.0">
+            </Separator>
+
+            <Label prefHeight="100" prefWidth="630.0" AnchorPane.leftAnchor="310.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0">
+
+            </Label>
+
+
+            <ListView fx:id="onlineUsers" layoutY="122.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="572.0" prefWidth="300.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="125.0" />
+            <TextArea fx:id="chatArea" editable="false" layoutX="326.0" layoutY="120.0" prefHeight="510.0" prefWidth="620.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="125.0">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </TextArea>
+
+
+            <TextField fx:id="inputField" layoutX="320.0" layoutY="634.0" onAction="#sendMessage" prefHeight="70.0" prefWidth="519.0" promptText="Введите сообщение" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="634.0" HBox.hgrow="ALWAYS">
                 <font>
                     <Font size="18.0" />
                 </font>
             </TextField>
-            <Button fx:id="btnSendMessage" onAction="#sendMessage" prefHeight="70.0" prefWidth="150.0" text="SEND">
+            <Button fx:id="btnSendMessage" layoutX="835.0" layoutY="634.0" onAction="#sendMessage" prefHeight="70.0" prefWidth="103.0" text="Отправить" AnchorPane.rightAnchor="10.0">
                 <HBox.margin>
                     <Insets left="5.0" />
                 </HBox.margin>
+                <font>
+                    <Font name="Times New Roman Bold" size="15.0" />
+                </font>
             </Button>
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" />
-            </padding>
-        </HBox>
-    </children>
-</VBox>
+            <Label fx:id="nickLabel" layoutX="14.0" layoutY="36.0" prefHeight="30.0" prefWidth="180.0" text="Никнейм" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="750.0" AnchorPane.topAnchor="30.0">
+                <font>
+                    <Font name="Times New Roman Bold" size="23.0" />
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND" />
+                </cursor>
+            </Label>
+            <Button layoutX="14.0" layoutY="88.0" mnemonicParsing="false" onAction="#exit" text="Выйти из аккаунта" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0" />
+            <Button layoutX="14.0" layoutY="63.0" mnemonicParsing="false" onAction="#showSettings" prefHeight="25.0" prefWidth="76.0" text="Настройки" AnchorPane.bottomAnchor="628.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="864.0" AnchorPane.topAnchor="60.0" />
+            <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="210.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="580.0" AnchorPane.leftAnchor="215.0" AnchorPane.topAnchor="30.0">
+                <image>
+                    <Image url="@1487679899_icon-user-640x640.png" />
+                </image>
+            </ImageView>
+            <Label layoutX="319.0" layoutY="57.0" text="С кем диалог?" AnchorPane.leftAnchor="319.0" AnchorPane.topAnchor="57.0">
+                <font>
+                    <Font name="Times New Roman Bold" size="28.0" />
+                </font>
+            </Label>
+            <Label layoutX="320.0" layoutY="88.0" text="Тип Сообщения" AnchorPane.bottomAnchor="582.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="88.0">
+                <font>
+                    <Font name="Times New Roman Italic" size="22.0" />
+                </font>
+            </Label>
+        </children>
+    </AnchorPane>
+    <AnchorPane fx:id="ChatPaneAuth" layoutX="175.0" layoutY="154.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="159.0" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="154.0">
+        <children>
+            <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="271.0" prefHeight="25.0" prefWidth="214.0" promptText="Введите пароль" />
+            <Label alignment="CENTER" layoutX="156.0" layoutY="39.0" prefHeight="50.0" prefWidth="289.0" text="Войти">
+                <font>
+                    <Font name="Times New Roman Bold" size="25.0" />
+                </font>
+            </Label>
+            <TextField fx:id="loginField" layoutX="226.0" layoutY="227.0" prefHeight="25.0" prefWidth="214.0" promptText="Введите логин" />
+            <Label layoutX="157.0" layoutY="228.0" prefHeight="23.0" prefWidth="57.0" text="Логин">
+                <font>
+                    <Font name="Times New Roman" size="20.0" />
+                </font>
+            </Label>
+            <Label layoutX="153.0" layoutY="272.0" prefHeight="23.0" prefWidth="65.0" text="Пароль">
+                <font>
+                    <Font name="Times New Roman" size="20.0" />
+                </font>
+            </Label>
+            <Button fx:id="btnSendAuth" layoutX="230.0" layoutY="317.0" mnemonicParsing="false" onAction="#sendAuth" prefHeight="25.0" prefWidth="72.0" text="Войти" />
+            <Label fx:id="infoLabel" alignment="CENTER" cache="true" layoutX="50.0" layoutY="150.0" prefHeight="50.0" prefWidth="495.0" text="Пожалуйста авторизуйтесь под существующей учетной записью." textAlignment="CENTER" textOverrun="CLIP" wrapText="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="150.0">
+                <font>
+                    <Font name="Times New Roman Italic" size="18.0" />
+                </font>
+            </Label>
+            <Hyperlink layoutX="184.0" layoutY="89.0" onAction="#registration" prefHeight="23.0" prefWidth="236.0" text="Нет учётной записи? Зарегистрируйтесь!" underline="true" />
+            <Button fx:id="registration" layoutX="317.0" layoutY="317.0" mnemonicParsing="false" onAction="#registration" prefHeight="25.0" prefWidth="103.0" text="Регистрация" />
+        </children>
+    </AnchorPane>
+   <Button mnemonicParsing="false" text="Button" />
+
+</AnchorPane>

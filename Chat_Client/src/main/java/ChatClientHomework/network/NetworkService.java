@@ -29,7 +29,6 @@ public class NetworkService {
                 } catch (IOException e) {
                     try {
                         socket.close();
-                        inputStream.close();//TODO
                         System.out.println("Socket is closed");
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -38,8 +37,6 @@ public class NetworkService {
                 }
             }
         });
-
-        t.setDaemon(true);
         t.start();
 
     }

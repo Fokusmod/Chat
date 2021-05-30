@@ -11,7 +11,55 @@ public class ChatMessage {
     private String to;
     private String login;
     private String password;
+    private String oldPassword;
+    private String nickName;
     private List<String> onlineUsers;
+    private String newPassword;
+    private String oldNick;
+    private String newNick;
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getOldNick() {
+        return oldNick;
+    }
+
+    public void setOldNick(String oldNick) {
+        this.oldNick = oldNick;
+    }
+
+    public String getNewNick() {
+        return newNick;
+    }
+
+    public void setNewNick(String newNick) {
+        this.newNick = newNick;
+    }
+
+
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 
     public static ChatMessage unmarshall(String json) {
         return new Gson().fromJson(json, ChatMessage.class);

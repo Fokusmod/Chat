@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="Pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ChatClientHomework.MainChatController">
+   <children>
+      <TextField fx:id="loginFieldReg" layoutX="226.0" layoutY="188.0" prefHeight="25.0" prefWidth="214.0" promptText="Введите логин" AnchorPane.bottomAnchor="187.0" AnchorPane.topAnchor="188.0" />
+      <Label fx:id="loginLabel" layoutX="157.0" layoutY="189.0" prefHeight="23.0" prefWidth="57.0" text="Логин">
+         <font>
+            <Font name="Times New Roman" size="20.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="passwordFieldReg" layoutX="226.0" layoutY="227.0" prefHeight="25.0" prefWidth="214.0" promptText="Введите пароль" />
+      <Label alignment="CENTER" layoutX="157.0" layoutY="46.0" prefHeight="50.0" prefWidth="289.0" text="Зарегистрируйтесь">
+         <font>
+            <Font name="Times New Roman Bold" size="25.0" />
+         </font>
+      </Label>
+      <Label fx:id="passLabel" layoutX="153.0" layoutY="228.0" prefHeight="23.0" prefWidth="65.0" text="Пароль">
+         <font>
+            <Font name="Times New Roman" size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="nickNameReg" layoutX="226.0" layoutY="265.0" prefHeight="25.0" prefWidth="220.0" promptText="Введите ваш ник" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="265.0" />
+      <Label fx:id="nickLabel" layoutX="137.0" layoutY="266.0" prefHeight="23.0" prefWidth="81.0" text="Никнейм">
+         <font>
+            <Font name="Times New Roman" size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="CompleteRegistration" layoutX="200.0" layoutY="327.0" mnemonicParsing="false" onAction="#sendRegistration" prefHeight="25.0" prefWidth="100.0" text="ОК" />
+      <Label fx:id="infoRegLabel" alignment="CENTER" layoutX="89.0" layoutY="130.0" prefHeight="78.0" prefWidth="500.0" text="Введити данные аккаунта" textAlignment="CENTER" textOverrun="CLIP" wrapText="true" AnchorPane.bottomAnchor="222.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
+         <font>
+            <Font name="Times New Roman Italic" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="Cancel" layoutX="340.0" layoutY="327.0" mnemonicParsing="false" onAction="#cancel" prefHeight="25.0" prefWidth="100.0" text="Отмена" />
+      <Button fx:id="btnCancel" layoutX="229.0" layoutY="254.0" onAction="#cancel" prefHeight="25.0" prefWidth="145.0" text="Вернуться" visible="false" AnchorPane.bottomAnchor="121.0" AnchorPane.topAnchor="254.0" />
+
+   </children>
+   <opaqueInsets>
+      <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+   </opaqueInsets>
+</AnchorPane>

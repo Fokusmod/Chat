@@ -42,14 +42,16 @@ public class ChatServer {
         }
     }
 
-    private synchronized void sendListOnlineUsers() {
+    public synchronized void sendListOnlineUsers() {
         ChatMessage msg = new ChatMessage();
         msg.setMessageType(MessageType.CLIENT_LIST);
         msg.setOnlineUsers(new ArrayList<>());
         for (ClientHandler user : listOnlineUsers) {
             msg.getOnlineUsers().add(user.getCurrentName());
+            System.out.println(msg.getOnlineUsers());
         }
         for (ClientHandler user : listOnlineUsers) {
+            System.out.println(user);
             user.sendMessage(msg);
         }
     }
@@ -87,4 +89,5 @@ public class ChatServer {
     public AuthService getAuthService() {
         return authService;
     }
+
 }
