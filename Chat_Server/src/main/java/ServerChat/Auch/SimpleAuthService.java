@@ -54,7 +54,7 @@ public class SimpleAuthService implements AuthService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
     @Override

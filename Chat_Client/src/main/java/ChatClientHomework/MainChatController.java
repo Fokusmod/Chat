@@ -95,8 +95,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     }
 
     public void exit(ActionEvent actionEvent) {
-
-        System.exit(0);
+        Platform.exit();
 
 
     }
@@ -157,7 +156,6 @@ public class MainChatController implements Initializable, MessageProcessor {
         if (msg.getFrom().equals(this.currentName)) return;
         String modifier = msg.getMessageType().equals(MessageType.PUBLIC) ? "[pub]" : "[private]";
         String text = String.format("%s [%s] пишет:\n%s\n", modifier, msg.getFrom(), msg.getBody());
-//        String message2 = String.format("%s [%s] пишет:\n%s\n", modifier, msg.getFrom(), msg.getBody());
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("Chat_Client/src/main/resources/Chat_History/" + currentName, true))) {
             bw.write(text);
@@ -188,7 +186,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     public void historyChat() {
         if (lineCount() == 0) return;
         int count = lineCount();
-        System.out.println(count);
+        System.out.println("Колличество строк" + count);
         File history = new File("Chat_Client/src/main/resources/Chat_History/" + currentName);
         try (BufferedReader br = new BufferedReader(new FileReader(history))) {
             int start = count - 100;
@@ -201,9 +199,6 @@ public class MainChatController implements Initializable, MessageProcessor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void handleButtonAction(ActionEvent actionEvent) {
     }
 
 
@@ -313,10 +308,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     }
 
     private void refreshOnlineUsers(ChatMessage message) {
-        System.out.println("Строка " + message.getOnlineUsers());
         message.getOnlineUsers().add(0, PUBLIC);
-        System.out.println(onlineUsers);
-        System.out.println(this.onlineUsers);
         this.onlineUsers.setItems(FXCollections.observableArrayList(message.getOnlineUsers()));
         this.onlineUsers.getSelectionModel().selectFirst();
 

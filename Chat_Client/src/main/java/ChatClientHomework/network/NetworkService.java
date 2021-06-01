@@ -32,11 +32,11 @@ public class NetworkService {
                         System.out.println("Socket is closed");
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
-
                     }
                 }
             }
         });
+        t.setDaemon(true);
         t.start();
 
     }

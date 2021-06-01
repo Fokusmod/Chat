@@ -182,6 +182,5 @@
             <Button fx:id="registration" layoutX="317.0" layoutY="317.0" mnemonicParsing="false" onAction="#registration" prefHeight="25.0" prefWidth="103.0" text="Регистрация" />
         </children>
     </AnchorPane>
-   <Button mnemonicParsing="false" text="Button" />
 
 </AnchorPane>

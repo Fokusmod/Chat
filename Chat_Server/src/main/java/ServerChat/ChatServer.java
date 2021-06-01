@@ -48,10 +48,9 @@ public class ChatServer {
         msg.setOnlineUsers(new ArrayList<>());
         for (ClientHandler user : listOnlineUsers) {
             msg.getOnlineUsers().add(user.getCurrentName());
-            System.out.println(msg.getOnlineUsers());
+
         }
         for (ClientHandler user : listOnlineUsers) {
-            System.out.println(user);
             user.sendMessage(msg);
         }
     }

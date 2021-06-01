@@ -12,6 +12,8 @@ import java.net.SocketException;
 import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientHandler {
     private Socket socket;
@@ -33,47 +35,57 @@ public class ClientHandler {
     }
 
     public synchronized void handle() {
-        new Thread(() -> {
-
-//            try {
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(()-> {
             auth();
-//                readMessages();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-        }).start();
+            registrationAndSettings();
+        });
+        service.shutdown();
     }
 
     public void auth() {
         try {
-            while (true) {
+            while (!socket.isClosed() || !Thread.currentThread().isInterrupted()) {
                 String msg = inputStream.readUTF();
                 ChatMessage message = ChatMessage.unmarshall(msg);
-//                message.setFrom(this.currentUsername);
+                if (message.getMessageType() == MessageType.SEND_AUTH) {
+                    String nickname = chatServer.getAuthService().getUsernameByLoginAndPassword(message.getLogin(), message.getPassword());
+                    if (nickname.isEmpty()) {
+                        ChatMessage failed = new ChatMessage();
+                        failed.setMessageType(MessageType.AUTH_FAILED);
+                        failed.setBody("Пользователя с таким логином или паролем не существует. Введите корректные данные");
+                        sendMessage(failed);
+                    } else if (chatServer.isUserOnline(nickname)) {
+                        ChatMessage failed = new ChatMessage();
+                        failed.setMessageType(MessageType.AUTH_DOUBLE);
+                        failed.setBody("Пользователь с таким логином уже в сети.");
+                        sendMessage(failed);
+                    } else {
+                        ChatMessage confirm = new ChatMessage();
+                        confirm.setMessageType(MessageType.AUTH_CONFIRM);
+                        confirm.setNickName(nickname);
+                        confirm.setBody("Успешное подключение");
+                        sendMessage(confirm);
+                        currentUsername = nickname;
+                        chatServer.subscribe(this);
+                        System.out.println("Subscribed");
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            closeHandler();
+            System.out.println("Клиент был отключен.");
+        }
+    }
+
+    public void registrationAndSettings() {
+        try {
+            while (!socket.isClosed() || !Thread.currentThread().isInterrupted()) {
+                String msg = inputStream.readUTF();
+                ChatMessage message = ChatMessage.unmarshall(msg);
+                message.setFrom(this.currentUsername);
                 switch (message.getMessageType()) {
-                    case SEND_AUTH:
-                        String nickname = chatServer.getAuthService().getUsernameByLoginAndPassword(message.getLogin(), message.getPassword());
-                        if (nickname == null) {
-                            ChatMessage failed = new ChatMessage();
-                            failed.setMessageType(MessageType.AUTH_FAILED);
-                            failed.setBody("Пользователя с таким логином или паролем не существует. Введите корректные данные");
-                            sendMessage(failed);
-                        } else if (chatServer.isUserOnline(nickname)) {
-                            ChatMessage failed = new ChatMessage();
-                            failed.setMessageType(MessageType.AUTH_DOUBLE);
-                            failed.setBody("Пользователь с таким логином уже в сети.");
-                            sendMessage(failed);
-                        } else {
-                            ChatMessage confirm = new ChatMessage();
-                            confirm.setMessageType(MessageType.AUTH_CONFIRM);
-                            confirm.setNickName(nickname);
-                            confirm.setBody("Успешное подключение");
-                            sendMessage(confirm);
-                            currentUsername = nickname;
-                            chatServer.subscribe(this);
-                            System.out.println("Subscribed");
-                            break;
-                        }
                     case SEND_REGISTRATION:
                         if (chatServer.getAuthService().newUser(message.getLogin(), message.getPassword(), message.getNickName())) {
                             ChatMessage confirm = new ChatMessage();
@@ -87,12 +99,6 @@ public class ClientHandler {
                             sendMessage(failed);
                         }
                         break;
-                    case PUBLIC:
-                        chatServer.sendBroadcastMessage(message);
-                        break;
-                    case PRIVATE:
-                        chatServer.sendPrivateMessage(message);
-                        break;
                     case CHANGE_USERNAME:
                         String name = chatServer.getAuthService().changeUsername(message.getNewNick(), message.getOldNick());
                         System.out.println("Сообщение с бд" + name);
@@ -101,6 +107,7 @@ public class ClientHandler {
                             confirm.setMessageType(MessageType.CHANGE_USERNAME_CONFIRM);
                             confirm.setBody("Успешная смена ника!");
                             sendMessage(confirm);
+                            //TODO доделать чтобы при смене ника сервер обновлял никнейм, а так же база данных так же изменяла имя файла
                         } else {
                             ChatMessage failed = new ChatMessage();
                             failed.setMessageType(MessageType.CHANGE_USERNAME_FAILED);
@@ -109,8 +116,8 @@ public class ClientHandler {
                         }
                         break;
                     case CHANGE_PASSWORD:
-                        String pass = chatServer.getAuthService().changePassword(message.getNewPassword(),message.getLogin(),message.getOldPassword());
-                        System.out.println("Сообщение с бд" + message.getNewPassword() + message.getLogin() +  message.getOldPassword() + "" + pass);
+                        String pass = chatServer.getAuthService().changePassword(message.getNewPassword(), message.getLogin(), message.getOldPassword());
+                        System.out.println("Сообщение с бд" + message.getNewPassword() + message.getLogin() + message.getOldPassword() + "" + pass);
                         if (pass.equalsIgnoreCase(message.getNewPassword())) {
                             System.out.println(pass);
                             ChatMessage confirm = new ChatMessage();
@@ -124,27 +131,6 @@ public class ClientHandler {
                             sendMessage(failed);
                         }
                         break;
-
-
-//                        case PUBLIC -> chatServer.sendBroadcastMessage(message);
-//                        case PRIVATE -> chatServer.sendPrivateMessage(message);
-
-                }
-            }
-        } catch (IOException e) {
-            closeHandler();
-            System.out.println("Клиент был отключен.");
-        }
-    }
-
-
-    private void readMessages() throws IOException {
-        try {
-            while (!Thread.currentThread().isInterrupted() || socket.isConnected()) {
-                String msg = inputStream.readUTF();
-                ChatMessage message = ChatMessage.unmarshall(msg);
-                message.setFrom(this.currentUsername);
-                switch (message.getMessageType()) {
                     case PUBLIC:
                         chatServer.sendBroadcastMessage(message);
                         break;
@@ -154,11 +140,12 @@ public class ClientHandler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
             closeHandler();
+            System.out.println("Пользователь отключился.");
         }
     }
+
+
 
     public void sendMessage(ChatMessage message) {
         try {
@@ -170,64 +157,6 @@ public class ClientHandler {
 
     public String getCurrentName() {
         return this.currentUsername;
-    }
-
-    private void authenticate() {
-//        Timer timer = new Timer(true);
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                try {
-//                    ChatMessage response = new ChatMessage();
-//                    response.setMessageType(MessageType.ERROR);
-//                    response.setBody("Время для подключения вышло! Вы были отключены.");
-//                    sendMessage(response);
-//                    Thread.sleep(50);
-//                    socket.close();
-//                } catch (IOException | InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, 200000);
-//
-//        System.out.println("Запущена аутентификация клиента...");
-//        try {
-//            while (true) {
-//                String authMessage = inputStream.readUTF();
-//                System.out.println("Auth received");
-//                ChatMessage msg = ChatMessage.unmarshall(authMessage);
-//                String username = chatServer.getAuthService().getUsernameByLoginAndPassword(msg.getLogin(), msg.getPassword());
-//                System.out.println(authMessage);
-//                System.out.println(username + msg.getLogin() + msg.getPassword());
-//                ChatMessage response = new ChatMessage();
-//
-//                if (username == null) {
-//                    response.setMessageType(MessageType.ERROR);
-//                    response.setBody("Неправильное имя или пароль!");
-//                    System.out.println("Неверные учетные данные");
-//                } else if (chatServer.isUserOnline(username)) {
-//                    response.setMessageType(MessageType.ERROR);
-//                    response.setBody("Double auth!");
-//                    System.out.println("Double auth!");
-//                } else {
-//                    response.setMessageType(MessageType.AUTH_CONFIRM);
-//                    response.setBody(username);
-//                    currentUsername = username;
-//                    chatServer.subscribe(this);
-//                    System.out.println("Subscribed");
-//                    sendMessage(response);
-//                    timer.cancel();
-//                    break;
-//                }
-//                sendMessage(response);
-//            }
-//        } catch (IOException e) {  //TODO
-//            try {
-//                socket.close();
-//            } catch (IOException ioException) {
-//                ioException.printStackTrace();
-//            }
-//        }
     }
 
     public void closeHandler() {
