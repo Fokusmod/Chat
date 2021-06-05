@@ -2,43 +2,50 @@ package ServerChat;
 
 
 
-import ServerChat.Auch.AuthService;
-import ServerChat.Auch.SimpleAuthService;
+import ServerChat.Auth.AuthService;
+import ServerChat.Auth.SimpleAuthService;
 import common.ChatMessage;
 import common.MessageType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChatServer {
+    private static final Logger LOGGER = LogManager.getLogger(ChatServer.class);
     private static final int PORT = 1300;
     private List<ClientHandler> listOnlineUsers;
-
     private AuthService authService;
+    private ExecutorService executorService;
 
     public ChatServer() {
         this.listOnlineUsers = new ArrayList<>();
         this.authService = new SimpleAuthService();
+        this.executorService = Executors.newCachedThreadPool();
     }
 
     public void start() {
         try(ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Сервер запущен");
+            LOGGER.info("Сервер запущен.");
             authService.start();
 
             while (true) {
-                System.out.println("Ждём подключений");
+                LOGGER.info("Ждём подключений");
                 Socket socket = serverSocket.accept();
-                System.out.println("Клиент подключился");
+                LOGGER.info("Клиент подключился");
                 new ClientHandler(socket, this).handle();
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             authService.stop();
+            executorService.shutdown();
         }
     }
 
@@ -87,6 +94,10 @@ public class ChatServer {
 
     public AuthService getAuthService() {
         return authService;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
 }

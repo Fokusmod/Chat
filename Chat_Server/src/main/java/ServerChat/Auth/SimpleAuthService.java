@@ -1,9 +1,12 @@
-package ServerChat.Auch;
+package ServerChat.Auth;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.List;
 
 public class SimpleAuthService implements AuthService {
+    private static final Logger LOGGER = LogManager.getLogger(SimpleAuthService.class);
     private final static String CONNECTION = "jdbc:sqlite:chat_server/Auth.db";
     private final static String GET_USERNAME = "select nickname from Account where login = ? and password = ?;";
     private final static String CHANGE_USERNAME = "update Account set nickname = ? where nickname = ?;";
@@ -16,7 +19,7 @@ public class SimpleAuthService implements AuthService {
 
     @Override
     public void start() {
-        System.out.println("Сервис аутентификации запущен");
+        LOGGER.info("Сервис аутентификации запущен");
         try {
             connection = DriverManager.getConnection(CONNECTION);
             statement = connection.createStatement();
@@ -27,7 +30,7 @@ public class SimpleAuthService implements AuthService {
 
     @Override
     public void stop() {
-        System.out.println("Сервис аутентификации остановлен");
+        LOGGER.info("Сервис аутентификации остановлен");
         try {
             if (statement != null) statement.close();
         } catch (SQLException e) {

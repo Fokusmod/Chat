@@ -3,17 +3,12 @@ package ChatClientHomework;
 import ChatClientHomework.network.ChatMessageService;
 import ChatClientHomework.network.ChatMessageServiceImpl;
 import ChatClientHomework.network.MessageProcessor;
-import ServerChat.Auch.AuthService;
-import ServerChat.Auch.SimpleAuthService;
 import common.ChatMessage;
 import common.MessageType;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -23,13 +18,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -39,6 +30,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -82,6 +74,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     public TextField settingLogin;
     private ChatMessageService messageService;
     private String currentName;
+    private HistoryService historyService;
 
     public Stage stage1;
 
@@ -141,13 +134,8 @@ public class MainChatController implements Initializable, MessageProcessor {
         msg.setBody(text);
         messageService.send(msg.marshall());
         chatArea.appendText(String.format("%s пишет:\n%s\n", currentName, text));
-        String message1 = ((String.format("%s пишет:\n%s\n", currentName, text)));
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Chat_Client/src/main/resources/Chat_History/" + currentName, true))) {
-            bw.write(message1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        historyService.writeHistory(String.format("%s пишет:\n%s\n", currentName, text));
 
         inputField.clear();
     }
@@ -157,50 +145,10 @@ public class MainChatController implements Initializable, MessageProcessor {
         String modifier = msg.getMessageType().equals(MessageType.PUBLIC) ? "[pub]" : "[private]";
         String text = String.format("%s [%s] пишет:\n%s\n", modifier, msg.getFrom(), msg.getBody());
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Chat_Client/src/main/resources/Chat_History/" + currentName, true))) {
-            bw.write(text);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         chatArea.appendText(text);
+        historyService.writeHistory(text);
 
     }
-
-    public int lineCount() {
-        int lines = 0;
-        File history = new File("Chat_Client/src/main/resources/Chat_History/" + currentName);
-        if (history.exists()) {
-            try (BufferedReader br = new BufferedReader(new FileReader(history))) {
-                while (br.readLine() != null) {
-                    lines++;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return lines;
-        }
-        return 0;
-    }
-
-
-    public void historyChat() {
-        if (lineCount() == 0) return;
-        int count = lineCount();
-        System.out.println("Колличество строк" + count);
-        File history = new File("Chat_Client/src/main/resources/Chat_History/" + currentName);
-        try (BufferedReader br = new BufferedReader(new FileReader(history))) {
-            int start = count - 100;
-            for (int i = 0; i < count; i++) {
-                String text = br.readLine();
-                if (i >= start) {
-                    chatArea.appendText(text + "\n");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public void sendAuth(ActionEvent actionEvent) throws IOException {
         try {
@@ -261,7 +209,11 @@ public class MainChatController implements Initializable, MessageProcessor {
                             }, 2000);
 //                            App.stage1.setTitle(currentName);
                             nickLabel.setText(currentName);
-                            historyChat();
+                            this.historyService = new HistoryService(message.getLogin());
+                            List<String> history = historyService.readHistory();
+                            for (String s : history) {
+                                chatArea.appendText(s + System.lineSeparator());
+                            }
                             break;
                         }
                         case SEND_REGISTRATION_FAILED:
