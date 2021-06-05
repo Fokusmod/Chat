@@ -1,4 +1,4 @@
-package ServerChat.Auch;
+package ServerChat.Auth;
 
 import java.sql.SQLException;
 

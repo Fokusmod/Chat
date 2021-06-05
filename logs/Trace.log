@@ -1,0 +1,8 @@
+INFO  2021-06-05 22:05:40 [main] ServerChat.ChatServer (ChatServer.java:35) - Сервер запущен.
+INFO  2021-06-05 22:05:40 [main] ServerChat.Auth.SimpleAuthService (SimpleAuthService.java:22) - Сервис аутентификации запущен
+INFO  2021-06-05 22:05:40 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2021-06-05 22:05:51 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2021-06-05 22:05:51 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2021-06-05 22:05:51 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2021-06-05 22:05:51 [pool-2-thread-1] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2021-06-05 22:06:01 [pool-2-thread-1] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.

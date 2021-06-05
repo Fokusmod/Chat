@@ -1,21 +1,17 @@
 package ServerChat;
 
-import ServerChat.Auch.AuthService;
 import common.ChatMessage;
 import common.MessageType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
-import java.sql.SQLException;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ClientHandler {
+    private static final Logger LOGGER = LogManager.getLogger(ClientHandler.class);
     private Socket socket;
     private ChatServer chatServer;
     private DataOutputStream outputStream;
@@ -28,19 +24,17 @@ public class ClientHandler {
             this.socket = socket;
             this.inputStream = new DataInputStream(socket.getInputStream());
             this.outputStream = new DataOutputStream(socket.getOutputStream());
-            System.out.println("Обработчик клиентов создан!!!");
+            LOGGER.info("Обработчик клиентов создан!");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public synchronized void handle() {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(()-> {
+        chatServer.getExecutorService().execute(()-> {
             auth();
             registrationAndSettings();
         });
-        service.shutdown();
     }
 
     public void auth() {
@@ -64,18 +58,19 @@ public class ClientHandler {
                         ChatMessage confirm = new ChatMessage();
                         confirm.setMessageType(MessageType.AUTH_CONFIRM);
                         confirm.setNickName(nickname);
-                        confirm.setBody("Успешное подключение");
+                        confirm.setLogin(message.getLogin());
+                        confirm.setBody("Успешное подключение.");
                         sendMessage(confirm);
                         currentUsername = nickname;
                         chatServer.subscribe(this);
-                        System.out.println("Subscribed");
+                        LOGGER.info("Клиент добавлен в список.");
                         break;
                     }
                 }
             }
         } catch (IOException e) {
             closeHandler();
-            System.out.println("Клиент был отключен.");
+            LOGGER.info("Клиент был отключен.");
         }
     }
 
@@ -141,7 +136,7 @@ public class ClientHandler {
             }
         } catch (IOException e) {
             closeHandler();
-            System.out.println("Пользователь отключился.");
+            LOGGER.info("Клиент отключился.");
         }
     }
 
