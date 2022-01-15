@@ -1,0 +1,43 @@
+INFO  2022-01-15 18:55:54 [main] ServerChat.ChatServer (ChatServer.java:35) - Сервер запущен.
+INFO  2022-01-15 18:55:54 [main] ServerChat.Auth.SimpleAuthService (SimpleAuthService.java:22) - Сервис аутентификации запущен
+INFO  2022-01-15 18:55:54 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 18:56:27 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 18:56:27 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 18:56:27 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 18:56:27 [pool-2-thread-1] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 18:56:56 [pool-2-thread-1] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 18:57:22 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 18:57:22 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 18:57:22 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 18:57:22 [pool-2-thread-1] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 18:57:30 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 18:57:30 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 18:57:30 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 18:57:45 [pool-2-thread-2] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 19:00:57 [pool-2-thread-1] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 19:00:59 [pool-2-thread-2] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 19:01:04 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 19:01:04 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 19:01:04 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 19:01:05 [pool-2-thread-2] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 19:01:16 [pool-2-thread-2] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 19:04:22 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 19:04:22 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 19:04:22 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 19:04:22 [pool-2-thread-3] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 19:04:27 [pool-2-thread-3] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 19:05:24 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 19:05:24 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 19:05:24 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 19:05:24 [pool-2-thread-3] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 19:05:28 [pool-2-thread-3] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 19:05:35 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 19:05:35 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 19:05:35 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 19:05:35 [pool-2-thread-3] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 19:05:46 [main] ServerChat.ChatServer (ChatServer.java:41) - Клиент подключился
+INFO  2022-01-15 19:05:46 [main] ServerChat.ClientHandler (ClientHandler.java:27) - Обработчик клиентов создан!
+INFO  2022-01-15 19:05:46 [main] ServerChat.ChatServer (ChatServer.java:39) - Ждём подключений
+INFO  2022-01-15 19:05:46 [pool-2-thread-4] ServerChat.ClientHandler (ClientHandler.java:66) - Клиент добавлен в список.
+INFO  2022-01-15 19:05:50 [pool-2-thread-4] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.
+INFO  2022-01-15 19:05:57 [pool-2-thread-3] ServerChat.ClientHandler (ClientHandler.java:139) - Клиент отключился.

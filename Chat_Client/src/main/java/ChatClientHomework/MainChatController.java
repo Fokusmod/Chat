@@ -88,6 +88,7 @@ public class MainChatController implements Initializable, MessageProcessor {
     }
 
     public void exit(ActionEvent actionEvent) {
+        System.exit(0);
         Platform.exit();
 
 

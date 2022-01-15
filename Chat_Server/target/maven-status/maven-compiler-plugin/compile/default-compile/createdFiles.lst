@@ -1,0 +1,7 @@
+ServerChat\ClientHandler.class
+ServerChat\Auth\AuthService.class
+ServerChat\Auth\SimpleAuthService.class
+ServerChat\ServerApp.class
+ServerChat\ClientHandler$1.class
+ServerChat\DataBase\AuthDatabase.class
+ServerChat\ChatServer.class
